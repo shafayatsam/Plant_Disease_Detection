@@ -1783,9 +1783,6 @@ margin: 0 auto;
 }
 
 
-
-
-
 /** about **/
 .about {
      padding: 50px 0;
@@ -1853,7 +1850,7 @@ margin: 0 auto;
     background: #4bc714;
     border: #4bc714 solid 1px;
 }
-.about_img {margin-top: 140px;}
+.about_img {margin-top: 100px;}
 .about_img figure {margin: 0;}
 .about_img figure img {width: 100%;}
 /** end about **/
@@ -2052,22 +2049,10 @@ transform: skew(190deg);
 .testimonial_cont h3 { color: #000; font-family: poppins;}
 
 
-     
-
-
-
-
-
-
-
 /** contact **/
-
-
 .contact {
     margin-top: 90px;
-    
 }
-
 
 .map_section {
     border-top: #052501 solid 6px;
@@ -2085,8 +2070,8 @@ transform: skew(190deg);
     position: absolute;
     z-index: 990;
     background: #052501;
-   margin-top: 80px;
-    padding: 60px 40px;
+    margin-top: 60px;
+    padding: 40px 20px;
 }
 
 .form-control {
@@ -2113,17 +2098,17 @@ transform: skew(190deg);
 }
 
 .send {
-    font-family: poppins;
-    float: left;
-    margin: 0 auto;
-    display: block;
-    background: #fff;
-    color: #000;
-    max-width: 165px;
-    padding: 13px 0px;
-    width: 100%;
-    font-size: 18px;
-    border-radius: 10px;
+     font-family: poppins;
+     float: left;
+     margin: 0 auto;
+     display: block;
+     background: #fff;
+     color: #000;
+     max-width: 120px;
+     padding: 5px 0px;
+     width: 100%;
+     font-size: 15px;
+     border-radius: 10px;
 }
 
 .send:hover {
@@ -2434,7 +2419,7 @@ border-radius: 10px;
 
 /*List CSS*/
 .info_body{
-     padding-top: 50px;
+     padding-top: 40px;
 }
 .info_body .heading {
      color: #fff;
@@ -2625,7 +2610,7 @@ border-radius: 10px;
      content: '12';
      font-size: 2rem;
      font-weight: bold;
-     color: #007612;
+     color: #4e574f;
      width: 2rem;
      opacity: 0.05;
      transition: 0.25s;
@@ -2652,5 +2637,24 @@ border-radius: 10px;
      color: #fff;
      text-align: center;
      text-transform: uppercase;
-     margin-top: 2rem;
    }
+
+/* Confirmation CSS*/
+.check_tick{
+     font-size: 55px;
+     margin: 0;
+     padding: 0;
+     color: #007612;
+}
+.well {
+     margin-top: 10px;
+     border: 1px solid #ccc;
+     padding: 5px;
+ }
+
+ .review {
+    padding: 10px;
+    background: #0b1d04;
+    border-radius: 3px;
+    color: #fff;
+}

@@ -45,8 +45,8 @@ class Review(models.Model):
     rating = models.DecimalField(max_digits=4, decimal_places=2, validators=[
         MaxValueValidator(10),
         MinValueValidator(0)
-    ]),
-    comment = models.TextField()
+        ]),
+    comment = models.TextField(max_length=150)
     review_dt = models.DateTimeField(auto_now_add=True)
 
 
@@ -58,6 +58,7 @@ class Subscriber(models.Model):
     username = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
     date_subscribed = models.DateTimeField(auto_now_add=True)
+    #subscription_dt = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.email

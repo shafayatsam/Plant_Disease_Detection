@@ -1,21 +1,64 @@
 from django.db import models
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
-from django.utils.translation import templatize
-from django.views.generic import TemplateView, FormView, View, ListView, DetailView
-from .forms import UploadForm
+from .models import Message
+from django.views.generic import TemplateView, FormView, View, ListView, DetailView, CreateView
+from .forms import SearchForm, UploadForm, MessageForm, SubscribeForm
+from django.db.models import Q
 import tensorflow as tf
 import numpy as np
 from PIL import Image
+import random
 
 from .models import Message, Disease, TeamMember, Review, Subscriber
 
 # Create your views here.
 
+class HomePageView(View):
+    
+    def get(self, request):
+        form = MessageForm()
+        subscribe = SubscribeForm()
+        search_form = SearchForm(request.GET)
+        if search_form.is_valid() and request.GET.get('keyWord') != None:
+            query = request.GET.get('keyWord')
+            lookups= Q(plant_name__icontains=query)|Q(disease_name__icontains=query)
+            
+            result = Disease.objects.filter(lookups)[:12]
 
-class HomePageView(TemplateView):
-    template_name = 'index.html'
+            return render(request, 'list_diseases.html', {'object_list' : result, 'form' : search_form})
+
         
+        team = TeamMember.objects.all()
+        return render(request, 'index.html', {'form': form, 
+                                              'subscribe_form' : subscribe, 
+                                              'search_form' : search_form,
+                                              'team' : team})
+    
+    def post(self, request):
+        form = MessageForm(request.POST)
+        subscribe_form = SubscribeForm(request.POST)
+        if form.is_valid() and request.method == 'POST':
+            # process the data in form.cleaned_data as required
+            # redirect to a new URL:
+            name = request.POST.get('name')
+            email = request.POST.get('email')
+            phone = request.POST.get('phone')
+            message = request.POST.get('message')
+
+            msg = Message(name = name, email = email, phone = phone, msg = message)
+            msg.save()
+
+            return render(request, 'confirmation.html', {"confirm" : "Your message has been sent"})
+
+        elif subscribe_form.is_valid() and request.method == 'POST':
+            email = request.POST.get('email')
+
+            subscribe = Subscriber(username=email+'.aifarm',email=email)
+            subscribe.save()
+
+            return render(request, 'confirmation.html', {"confirm" : "Thanks For Subscribe"})
+
 
 class DiseaseInfoView(ListView):
     template_name = 'info.html'
@@ -31,16 +74,26 @@ class DiseaseDetailView(DetailView):
     template_name = 'info.html'
     context_object_name = 'object_list'
 
-    
-
-class AllDiseaseView(ListView):
+class AllDiseaseView(ListView, FormView):
     template_name = 'list_diseases.html'
     model = Disease
     context_object_name = 'object_list'
+    form_class = SearchForm
+
+    def post(self, request):
+        search_form = SearchForm(request.POST)     
+        if search_form.is_valid() and request.POST.get('keyWord') != None:
+            query = request.POST.get('keyWord')
+            lookups= Q(plant_name__icontains=query)|Q(disease_name__icontains=query)
+            
+            result = Disease.objects.filter(lookups)[:12]
+
+            return render(request, 'list_diseases.html', {'object_list' : result, 'form' : search_form})
+
 
     def get_queryset(self):
-        return Disease.objects.all()
-
+        return Disease.objects.all()[:12]
+    
 
 class PredicPageView(TemplateView):
     template_name = 'info.html'
@@ -103,6 +156,30 @@ class PredictionView(View):
                 'confidence': round(float(confidence), 2),
                 'disease': disease
             })
+
+class ReviewListView(ListView, FormView):
+    model = Review
+    template_name = "review_list.html"
+    form_class = SearchForm
+
+    def post(self, request):
+        search_form = SearchForm(request.POST)     
+        if search_form.is_valid() and request.POST.get('keyWord') != None:
+            query = request.POST.get('keyWord')
+            lookups= Q(plant_name__icontains=query)|Q(disease_name__icontains=query)
+            
+            result = Disease.objects.filter(lookups)[:12]
+
+            return render(request, 'list_diseases.html', {'object_list' : result, 'form' : search_form})
+
+    def get_queryset(self):
+        return Review.objects.all().order_by('-review_dt')[:12]
+
+class ReviewCreateView(CreateView):
+    model = Review
+    template_name = "review.html"
+    fields = ['name', 'email', 'comment']
+    success_url = '/review-list'
 
 
 
