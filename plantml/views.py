@@ -1,5 +1,5 @@
 from django.db import models
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, response
 from django.shortcuts import render
 from .models import Message
 from django.views.generic import TemplateView, FormView, View, ListView, DetailView, CreateView
@@ -149,7 +149,7 @@ class PredictionView(View):
             plant_name, *predicted_class = disease.split()
             predicted_class = " ".join(predicted_class)
             confidence = np.max(predictions[0]) * 100
-
+            
             return render(request, 'predict.html', {
                 'plant_name': plant_name,
                 'disease_name': predicted_class,
